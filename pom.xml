@@ -20,7 +20,6 @@
     <name>group-wallet-system</name>
     <description>Al Ahly Momkn Group Wallet Task</description>
 
-    <!-- We will define our modules here in Step 2 -->
     <modules>
         <module>userService</module>
         <module>walletService</module>
@@ -33,7 +32,6 @@
         <java.version>17</java.version>
     </properties>
 
-    <!-- Shared Dependencies for ALL modules -->
     <dependencies>
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->
