@@ -20,7 +20,8 @@
 
     <modules>
         <module>userService</module>
-
+        <module>utility</module>
+        <module>transactionService</module>
     </modules>
 
     <properties>
