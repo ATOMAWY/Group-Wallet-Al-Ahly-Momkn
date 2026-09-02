@@ -20,11 +20,12 @@
     <description>Al Ahly Momkn Group Wallet Task</description>
 
     <modules>
+        <module>commonService</module>
         <module>userService</module>
         <module>walletService</module>
         <module>groupService</module>
         <module>applicationService</module>
-        <module>commonService</module>
+        <module>transactionService</module>
     </modules>
 
     <properties>
