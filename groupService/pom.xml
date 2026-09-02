@@ -19,5 +19,10 @@
             <artifactId>commonService</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.wallet</groupId>
+            <artifactId>walletService</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
