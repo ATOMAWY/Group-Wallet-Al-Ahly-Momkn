@@ -129,7 +129,17 @@ public class WalletService {
                 .build();
         walletRepository.save(groupWallet);
     }
+    @Transactional(readOnly = true)
+    public List<TransactionResponseDto> getPersonalTransactions(Long userId) {
+        Wallet personalWallet = walletRepository.findByUserIdAndType(userId, WalletType.PERSONAL)
+                .orElseThrow(() -> new ResourceNotFoundException("Personal wallet not found for user: " + userId));
 
+        return transactionRepository.findBySourceWalletIdOrDestWalletIdOrderByCreatedAtDesc(
+                        personalWallet.getId(), personalWallet.getId()
+                ).stream()
+                .map(transactionMapper::toResponseDto)
+                .toList();
+    }
     @Transactional(readOnly = true)
     public BigDecimal getPersonalBalance(Long userId) {
         Wallet wallet = walletRepository.findByUserIdAndType(userId, WalletType.PERSONAL)

@@ -1,5 +1,6 @@
 package com.alahlymomkn.controller;
 
+import com.alahlymomkn.transaction.dto.TransactionResponseDto;
 import com.alahlymomkn.wallet.dto.WalletResponseDto;
 import com.alahlymomkn.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/wallet")
@@ -30,5 +32,9 @@ public class WalletController {
                                                                 @RequestParam BigDecimal amount) {
         walletService.topUpPersonalWallet(userId, amount);
         return ResponseEntity.ok(walletService.getPersonalWallet(userId));
+    }
+    @GetMapping("/transactions")
+    public ResponseEntity<List<TransactionResponseDto>> getPersonalTransactions(@RequestHeader Long userId) {
+        return ResponseEntity.ok(walletService.getPersonalTransactions(userId));
     }
 }
