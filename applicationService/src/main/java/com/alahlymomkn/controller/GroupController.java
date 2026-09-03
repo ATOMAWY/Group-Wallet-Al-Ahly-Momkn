@@ -21,7 +21,6 @@ public class GroupController {
     private final GroupService groupService;
     private final WalletService walletService;
 
-    // 1. إنشاء مجموعة
     @PostMapping
     public ResponseEntity<GroupResponseDto> createGroup(@RequestParam String name, @RequestHeader Long userId) {
         return ResponseEntity.ok(groupService.createGroup(name, userId));
