@@ -1,6 +1,6 @@
-package com.alahlymomkn.wallet;
+package com.alahlymomkn.wallet.entity;
 
-import com.alahlymomkn.common.WalletType;
+import com.alahlymomkn.common.enums.WalletType;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;

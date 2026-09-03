@@ -1,8 +1,8 @@
 package com.alahlymomkn.controller;
 
-import com.alahlymomkn.group.Group;
-import com.alahlymomkn.group.GroupService;
-import com.alahlymomkn.wallet.WalletService;
+import com.alahlymomkn.group.entity.Group;
+import com.alahlymomkn.group.service.GroupService;
+import com.alahlymomkn.wallet.entity.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.alahlymomkn.user;
+package com.alahlymomkn.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

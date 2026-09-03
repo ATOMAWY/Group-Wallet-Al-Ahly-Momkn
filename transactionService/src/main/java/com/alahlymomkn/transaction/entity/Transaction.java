@@ -1,6 +1,6 @@
-package com.alahlymomkn.transaction;
+package com.alahlymomkn.transaction.entity;
 
-import com.alahlymomkn.common.TransactionType;
+import com.alahlymomkn.common.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;

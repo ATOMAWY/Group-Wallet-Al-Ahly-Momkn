@@ -1,5 +1,6 @@
-package com.alahlymomkn.wallet;
-import com.alahlymomkn.common.WalletType;
+package com.alahlymomkn.wallet.repo;
+import com.alahlymomkn.common.enums.WalletType;
+import com.alahlymomkn.wallet.entity.Wallet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

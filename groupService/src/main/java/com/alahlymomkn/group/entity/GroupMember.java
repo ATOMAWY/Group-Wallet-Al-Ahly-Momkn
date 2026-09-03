@@ -1,6 +1,6 @@
-package com.alahlymomkn.group;
+package com.alahlymomkn.group.entity;
 
-import com.alahlymomkn.common.GroupRole;
+import com.alahlymomkn.common.enums.GroupRole;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,5 +1,6 @@
-package com.alahlymomkn.transaction;
+package com.alahlymomkn.transaction.repository;
 
+import com.alahlymomkn.transaction.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

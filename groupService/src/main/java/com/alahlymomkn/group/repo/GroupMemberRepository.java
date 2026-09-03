@@ -1,4 +1,5 @@
-package com.alahlymomkn.group;
+package com.alahlymomkn.group.repo;
+import com.alahlymomkn.group.entity.GroupMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

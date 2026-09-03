@@ -1,9 +1,10 @@
-package com.alahlymomkn.wallet;
+package com.alahlymomkn.wallet.entity;
 
-import com.alahlymomkn.common.TransactionType;
-import com.alahlymomkn.common.WalletType;
+import com.alahlymomkn.common.enums.TransactionType;
+import com.alahlymomkn.common.enums.WalletType;
 import com.alahlymomkn.transaction.Transaction;
 import com.alahlymomkn.transaction.TransactionRepository;
+import com.alahlymomkn.wallet.repo.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

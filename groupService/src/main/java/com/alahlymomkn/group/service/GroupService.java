@@ -1,7 +1,11 @@
-package com.alahlymomkn.group;
+package com.alahlymomkn.group.service;
 
-import com.alahlymomkn.common.GroupRole;
-import com.alahlymomkn.wallet.WalletService;
+import com.alahlymomkn.common.enums.GroupRole;
+import com.alahlymomkn.group.entity.Group;
+import com.alahlymomkn.group.entity.GroupMember;
+import com.alahlymomkn.group.repo.GroupMemberRepository;
+import com.alahlymomkn.group.repo.GroupRepository;
+import com.alahlymomkn.wallet.entity.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

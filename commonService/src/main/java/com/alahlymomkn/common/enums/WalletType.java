@@ -1,4 +1,4 @@
-package com.alahlymomkn.common;
+package com.alahlymomkn.common.enums;
 
 public enum WalletType {
     PERSONAL, GROUP
