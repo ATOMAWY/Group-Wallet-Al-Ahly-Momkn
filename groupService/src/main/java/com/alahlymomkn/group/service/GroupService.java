@@ -8,6 +8,7 @@ import com.alahlymomkn.group.entity.GroupMember;
 import com.alahlymomkn.group.policy.RoleAssignmentPolicy;
 import com.alahlymomkn.group.repo.GroupMemberRepository;
 import com.alahlymomkn.group.repo.GroupRepository;
+import com.alahlymomkn.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +25,13 @@ public class GroupService {
     private final GroupMemberRepository memberRepository;
     private final List<RoleAssignmentPolicy> roleAssignmentPolicies;
 
+    private final WalletService walletService;
+
     @Transactional
     public Group createGroup(String groupName, Long creatorUserId) {
         Group group = groupRepository.save(Group.builder().name(groupName).build());
+
+        walletService.createGroupWallet(group.getId());
 
         GroupMember moderator = GroupMember.builder()
                 .groupId(group.getId())
