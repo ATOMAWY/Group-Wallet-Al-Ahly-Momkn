@@ -5,7 +5,7 @@ import com.alahlymomkn.group.entity.Group;
 import com.alahlymomkn.group.entity.GroupMember;
 import com.alahlymomkn.group.repo.GroupMemberRepository;
 import com.alahlymomkn.group.repo.GroupRepository;
-import com.alahlymomkn.wallet.service.WalletService;
+import com.alahlymomkn.wallet.entity.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

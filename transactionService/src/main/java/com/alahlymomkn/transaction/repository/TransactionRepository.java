@@ -3,9 +3,12 @@ package com.alahlymomkn.transaction.repository;
 import com.alahlymomkn.transaction.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findBySourceWalletIdOrDestWalletId(Long sourceId, Long destId);
+
+    List<Transaction> findBySourceWalletIdOrDestWalletIdOrderByCreatedAtDesc(Long sourceId, Long destId);
 }

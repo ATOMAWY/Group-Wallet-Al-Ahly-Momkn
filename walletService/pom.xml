@@ -23,5 +23,10 @@
             <artifactId>transactionService</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.wallet</groupId>
+            <artifactId>groupService</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

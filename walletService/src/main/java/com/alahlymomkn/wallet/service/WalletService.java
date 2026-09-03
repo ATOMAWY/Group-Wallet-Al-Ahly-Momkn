@@ -2,7 +2,6 @@ package com.alahlymomkn.wallet.service;
 
 import com.alahlymomkn.common.enums.TransactionType;
 import com.alahlymomkn.common.enums.WalletType;
-
 import com.alahlymomkn.transaction.entity.Transaction;
 import com.alahlymomkn.transaction.repository.TransactionRepository;
 import com.alahlymomkn.wallet.entity.Wallet;
@@ -23,13 +22,10 @@ public class WalletService {
     @Transactional
     public void transferToGroup(Long userId, Long groupId, BigDecimal amount) {
         Wallet userWallet = walletRepository.findByUserIdAndType(userId, WalletType.PERSONAL)
-                .orElseThrow(() -> new RuntimeException("User personal wallet not found"));
 
         Wallet groupWallet = walletRepository.findByGroupIdAndType(groupId, WalletType.GROUP)
-                .orElseThrow(() -> new RuntimeException("Group wallet not found"));
 
         if (userWallet.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient funds in your personal wallet!");
         }
 
         userWallet.setBalance(userWallet.getBalance().subtract(amount));
@@ -47,9 +43,7 @@ public class WalletService {
                 .build();
 
         transactionRepository.save(record);
-        System.out.println("✅ " + amount + " EGP transferred to Group " + groupId);
     }
-    // Inside WalletService.java
     public void createGroupWallet(Long groupId) {
         Wallet groupWallet = Wallet.builder()
                 .balance(BigDecimal.ZERO)
