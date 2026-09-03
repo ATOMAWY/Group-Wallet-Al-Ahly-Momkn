@@ -3,13 +3,16 @@ package com.alahlymomkn.group.service;
 import com.alahlymomkn.common.enums.GroupRole;
 import com.alahlymomkn.common.exceptions.AccessDeniedException;
 import com.alahlymomkn.common.exceptions.ResourceNotFoundException;
+import com.alahlymomkn.group.dto.GroupResponseDto;
 import com.alahlymomkn.group.entity.Group;
 import com.alahlymomkn.group.entity.GroupMember;
+import com.alahlymomkn.group.mapper.GroupMapper;
 import com.alahlymomkn.group.policy.RoleAssignmentPolicy;
 import com.alahlymomkn.group.repo.GroupMemberRepository;
 import com.alahlymomkn.group.repo.GroupRepository;
 import com.alahlymomkn.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +27,13 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final GroupMemberRepository memberRepository;
     private final List<RoleAssignmentPolicy> roleAssignmentPolicies;
-
+    private final GroupMapper groupMapper;
     private final WalletService walletService;
 
+
+
     @Transactional
-    public Group createGroup(String groupName, Long creatorUserId) {
+    public GroupResponseDto createGroup(String groupName, Long creatorUserId) {
         Group group = groupRepository.save(Group.builder().name(groupName).build());
 
         walletService.createGroupWallet(group.getId());
@@ -40,7 +45,7 @@ public class GroupService {
                 .build();
         memberRepository.save(moderator);
 
-        return group;
+        return groupMapper.toResponseDto(group);
     }
 
     @Transactional

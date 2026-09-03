@@ -8,7 +8,9 @@ import com.alahlymomkn.common.exceptions.InsufficientFundsException;
 import com.alahlymomkn.common.exceptions.ResourceNotFoundException;
 import com.alahlymomkn.group.entity.GroupMember;
 import com.alahlymomkn.group.repo.GroupMemberRepository;
+import com.alahlymomkn.transaction.dto.TransactionResponseDto;
 import com.alahlymomkn.transaction.entity.Transaction;
+import com.alahlymomkn.transaction.mapper.TransactionMapper;
 import com.alahlymomkn.transaction.repository.TransactionRepository;
 import com.alahlymomkn.wallet.entity.Wallet;
 import com.alahlymomkn.wallet.repo.WalletRepository;
@@ -25,6 +27,7 @@ public class WalletService {
 
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
+    private final TransactionMapper transactionMapper;
     private final GroupMemberRepository memberRepository;
 
     @Transactional
@@ -87,13 +90,15 @@ public class WalletService {
     }
 
     @Transactional(readOnly = true)
-    public List<Transaction> getGroupTransactions(Long groupId) {
+    public List<TransactionResponseDto> getGroupTransactions(Long groupId) {
         Wallet groupWallet = walletRepository.findByGroupIdAndType(groupId, WalletType.GROUP)
                 .orElseThrow(() -> new ResourceNotFoundException("Group wallet not found for group: " + groupId));
 
         return transactionRepository.findBySourceWalletIdOrDestWalletIdOrderByCreatedAtDesc(
-                groupWallet.getId(), groupWallet.getId()
-        );
+                        groupWallet.getId(), groupWallet.getId()
+                ).stream()
+                .map(transactionMapper::toResponseDto)
+                .toList();
     }
 
     public void createGroupWallet(Long groupId) {
@@ -121,4 +126,5 @@ public class WalletService {
         wallet.setBalance(wallet.getBalance().add(amount));
         walletRepository.save(wallet);
     }
+
 }
