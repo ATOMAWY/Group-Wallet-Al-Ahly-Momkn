@@ -21,9 +21,9 @@ public class WalletService {
 
     @Transactional
     public void transferToGroup(Long userId, Long groupId, BigDecimal amount) {
-        Wallet userWallet = walletRepository.findByUserIdAndType(userId, WalletType.PERSONAL)
+        Wallet userWallet = walletRepository.findByUserIdAndType(userId, WalletType.PERSONAL);
 
-        Wallet groupWallet = walletRepository.findByGroupIdAndType(groupId, WalletType.GROUP)
+        Wallet groupWallet = walletRepository.findByGroupIdAndType(groupId, WalletType.GROUP);
 
         if (userWallet.getBalance().compareTo(amount) < 0) {
         }

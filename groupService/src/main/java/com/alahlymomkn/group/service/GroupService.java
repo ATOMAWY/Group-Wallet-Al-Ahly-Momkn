@@ -1,14 +1,20 @@
 package com.alahlymomkn.group.service;
 
 import com.alahlymomkn.common.enums.GroupRole;
+import com.alahlymomkn.common.exceptions.AccessDeniedException;
+import com.alahlymomkn.common.exceptions.ResourceNotFoundException;
 import com.alahlymomkn.group.entity.Group;
 import com.alahlymomkn.group.entity.GroupMember;
+import com.alahlymomkn.group.policy.RoleAssignmentPolicy;
 import com.alahlymomkn.group.repo.GroupMemberRepository;
 import com.alahlymomkn.group.repo.GroupRepository;
-import com.alahlymomkn.wallet.entity.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -16,41 +22,66 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final GroupMemberRepository memberRepository;
-    private final WalletService walletService; // We will inject this to create the wallet
+    private final List<RoleAssignmentPolicy> roleAssignmentPolicies;
 
     @Transactional
     public Group createGroup(String groupName, Long creatorUserId) {
-        // 1. Create the Group
         Group group = groupRepository.save(Group.builder().name(groupName).build());
 
-        // 2. Create the Group Wallet (Call the other module!)
-        walletService.createGroupWallet(group.getId());
-
-        // 3. Make the creator the MODERATOR
         GroupMember moderator = GroupMember.builder()
                 .groupId(group.getId())
                 .userId(creatorUserId)
-                .role(GroupRole.MODERATOR)
+                .roles(new HashSet<>(Set.of(GroupRole.MODERATOR)))
                 .build();
         memberRepository.save(moderator);
 
         return group;
     }
 
+    @Transactional
     public void assignRole(Long moderatorId, Long groupId, Long targetUserId, GroupRole newRole) {
-        // 1. Check if the person asking is actually the MODERATOR
         GroupMember requester = memberRepository.findByGroupIdAndUserId(groupId, moderatorId)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() -> new AccessDeniedException("Only group moderators can change roles."));
 
-        if (requester.getRole() != GroupRole.MODERATOR) {
-            throw new RuntimeException("Access Denied: Only Moderators can change roles!");
+        if (!requester.getRoles().contains(GroupRole.MODERATOR)) {
+            throw new AccessDeniedException("Only group moderators can change roles.");
         }
 
-        // 2. Update the target user's role
         GroupMember target = memberRepository.findByGroupIdAndUserId(groupId, targetUserId)
-                .orElseThrow(() -> new RuntimeException("Target user is not in this group"));
+                .orElseThrow(() -> new ResourceNotFoundException("Target member not found in this group."));
 
-        target.setRole(newRole);
-        memberRepository.save(target);
+        RoleAssignmentPolicy policy = roleAssignmentPolicies.stream()
+                .filter(rolePolicy -> rolePolicy.supports(newRole))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No role assignment policy found for role: " + newRole));
+
+        policy.apply(requester, target, memberRepository);
+    }
+
+    @Transactional
+    public void addMember(Long moderatorId, Long groupId, Long newUserId) {
+        GroupMember requester = memberRepository.findByGroupIdAndUserId(groupId, moderatorId)
+                .orElseThrow(() -> new AccessDeniedException("Only group moderators can add members."));
+
+        if (!requester.getRoles().contains(GroupRole.MODERATOR)) {
+            throw new AccessDeniedException("Only group moderators can add members.");
+        }
+
+        if (memberRepository.findByGroupIdAndUserId(groupId, newUserId).isPresent()) {
+            return;
+        }
+
+        GroupMember newMember = GroupMember.builder()
+                .groupId(groupId)
+                .userId(newUserId)
+                .roles(new HashSet<>(Set.of(GroupRole.MEMBER)))
+                .build();
+
+        memberRepository.save(newMember);
+    }
+
+    public void validateMemberAccess(Long userId, Long groupId) {
+        memberRepository.findByGroupIdAndUserId(groupId, userId)
+                .orElseThrow(() -> new AccessDeniedException("User is not a member of this group."));
     }
 }

@@ -13,11 +13,4 @@ import java.util.Optional;
 public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> {
     Optional<GroupMember> findByGroupIdAndUserId(Long groupId, Long userId);
 
-    @Query("select gm from GroupMember gm join gm.roles r where gm.groupId = :groupId and r = :role")
-    Optional<GroupMember> findByGroupIdAndRole(@Param("groupId") Long groupId, @Param("role") GroupRole role);
-
-    @Query("select gm from GroupMember gm join gm.roles r where gm.groupId = :groupId and gm.userId = :userId and r = :role")
-    Optional<GroupMember> findByGroupIdAndUserIdAndRole(@Param("groupId") Long groupId,
-                                                      @Param("userId") Long userId,
-                                                      @Param("role") GroupRole role);
 }
