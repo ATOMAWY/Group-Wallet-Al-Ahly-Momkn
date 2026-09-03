@@ -12,7 +12,9 @@ import com.alahlymomkn.transaction.dto.TransactionResponseDto;
 import com.alahlymomkn.transaction.entity.Transaction;
 import com.alahlymomkn.transaction.mapper.TransactionMapper;
 import com.alahlymomkn.transaction.repository.TransactionRepository;
+import com.alahlymomkn.wallet.dto.WalletResponseDto;
 import com.alahlymomkn.wallet.entity.Wallet;
+import com.alahlymomkn.wallet.mapper.WalletMapper;
 import com.alahlymomkn.wallet.repo.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,23 @@ public class WalletService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
     private final GroupMemberRepository memberRepository;
+
+    private final WalletMapper walletMapper;
+
+    @Transactional(readOnly = true)
+    public WalletResponseDto getGroupWallet(Long groupId) {
+        Wallet groupWallet = walletRepository.findByGroupIdAndType(groupId, WalletType.GROUP)
+                .orElseThrow(() -> new ResourceNotFoundException("Group wallet not found for group: " + groupId));
+
+        return walletMapper.toResponseDto(groupWallet);
+    }
+    @Transactional(readOnly = true)
+    public WalletResponseDto getPersonalWallet(Long userId) {
+        Wallet wallet = walletRepository.findByUserIdAndType(userId, WalletType.PERSONAL)
+                .orElseThrow(() -> new ResourceNotFoundException("Personal wallet not found for user: " + userId));
+
+        return walletMapper.toResponseDto(wallet);
+    }
 
     @Transactional
     public void transferToGroup(Long userId, Long groupId, BigDecimal amount) {

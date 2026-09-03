@@ -4,6 +4,7 @@ import com.alahlymomkn.common.enums.GroupRole;
 import com.alahlymomkn.group.dto.GroupResponseDto;
 import com.alahlymomkn.group.service.GroupService;
 import com.alahlymomkn.transaction.dto.TransactionResponseDto;
+import com.alahlymomkn.wallet.dto.WalletResponseDto;
 import com.alahlymomkn.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,12 @@ public class GroupController {
         groupService.validateMemberAccess(userId, groupId);
         walletService.transferToGroup(userId, groupId, amount);
         return ResponseEntity.ok("Transfer of " + amount + " EGP successful!");
+    }
+    @GetMapping("/{groupId}/wallet")
+    public ResponseEntity<WalletResponseDto> getGroupWalletBalance(@PathVariable Long groupId,
+                                                                   @RequestHeader Long userId) {
+        groupService.validateMemberAccess(userId, groupId);
+        return ResponseEntity.ok(walletService.getGroupWallet(groupId));
     }
 
     @PostMapping("/{groupId}/expense")

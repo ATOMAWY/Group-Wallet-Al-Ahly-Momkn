@@ -1,5 +1,6 @@
 package com.alahlymomkn.controller;
 
+import com.alahlymomkn.wallet.dto.WalletResponseDto;
 import com.alahlymomkn.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +21,14 @@ public class WalletController {
     private final WalletService walletService;
 
     @GetMapping
-    public ResponseEntity<BigDecimal> getPersonalBalance(@RequestHeader Long userId) {
-        return ResponseEntity.ok(walletService.getPersonalBalance(userId));
+    public ResponseEntity<WalletResponseDto> getPersonalWallet(@RequestHeader Long userId) {
+        return ResponseEntity.ok(walletService.getPersonalWallet(userId));
     }
 
     @PostMapping
-    public ResponseEntity<BigDecimal> topUpPersonalWallet(@RequestHeader Long userId,
-                                                        @RequestParam BigDecimal amount) {
+    public ResponseEntity<WalletResponseDto> fundPersonalWallet(@RequestHeader Long userId,
+                                                                @RequestParam BigDecimal amount) {
         walletService.topUpPersonalWallet(userId, amount);
-        return ResponseEntity.ok(walletService.getPersonalBalance(userId));
+        return ResponseEntity.ok(walletService.getPersonalWallet(userId));
     }
 }
