@@ -12,7 +12,6 @@ import com.alahlymomkn.group.repo.GroupMemberRepository;
 import com.alahlymomkn.group.repo.GroupRepository;
 import com.alahlymomkn.wallet.service.WalletService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +28,6 @@ public class GroupService {
     private final List<RoleAssignmentPolicy> roleAssignmentPolicies;
     private final GroupMapper groupMapper;
     private final WalletService walletService;
-
-
 
     @Transactional
     public GroupResponseDto createGroup(String groupName, Long creatorUserId) {
@@ -50,12 +47,7 @@ public class GroupService {
 
     @Transactional
     public void assignRole(Long moderatorId, Long groupId, Long targetUserId, GroupRole newRole) {
-        GroupMember requester = memberRepository.findByGroupIdAndUserId(groupId, moderatorId)
-                .orElseThrow(() -> new AccessDeniedException("Only group moderators can change roles."));
-
-        if (!requester.getRoles().contains(GroupRole.MODERATOR)) {
-            throw new AccessDeniedException("Only group moderators can change roles.");
-        }
+        GroupMember requester = verifyModerator(groupId, moderatorId, "Only group moderators can change roles.");
 
         GroupMember target = memberRepository.findByGroupIdAndUserId(groupId, targetUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Target member not found in this group."));
@@ -70,12 +62,7 @@ public class GroupService {
 
     @Transactional
     public void addMember(Long moderatorId, Long groupId, Long newUserId) {
-        GroupMember requester = memberRepository.findByGroupIdAndUserId(groupId, moderatorId)
-                .orElseThrow(() -> new AccessDeniedException("Only group moderators can add members."));
-
-        if (!requester.getRoles().contains(GroupRole.MODERATOR)) {
-            throw new AccessDeniedException("Only group moderators can add members.");
-        }
+        verifyModerator(groupId, moderatorId, "Only group moderators can add members.");
 
         if (memberRepository.findByGroupIdAndUserId(groupId, newUserId).isPresent()) {
             return;
@@ -90,8 +77,20 @@ public class GroupService {
         memberRepository.save(newMember);
     }
 
+    @Transactional(readOnly = true)
     public void validateMemberAccess(Long userId, Long groupId) {
         memberRepository.findByGroupIdAndUserId(groupId, userId)
                 .orElseThrow(() -> new AccessDeniedException("User is not a member of this group."));
+    }
+
+
+    private GroupMember verifyModerator(Long groupId, Long userId, String failureMessage) {
+        GroupMember member = memberRepository.findByGroupIdAndUserId(groupId, userId)
+                .orElseThrow(() -> new AccessDeniedException(failureMessage));
+
+        if (!member.getRoles().contains(GroupRole.MODERATOR)) {
+            throw new AccessDeniedException(failureMessage);
+        }
+        return member;
     }
 }

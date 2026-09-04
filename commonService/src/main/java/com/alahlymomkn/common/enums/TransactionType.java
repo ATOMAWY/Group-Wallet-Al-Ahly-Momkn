@@ -1,5 +1,5 @@
 package com.alahlymomkn.common.enums;
 
 public enum TransactionType {
-    DEPOSIT, EXPENSE
+    DEPOSIT, EXPENSE ,TOP_UP
 }
